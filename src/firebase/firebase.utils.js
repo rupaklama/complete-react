@@ -52,7 +52,8 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
     }
   }
 
-  return userRef; // we can use it to do other things
+  // we can use it to do other things
+  return userRef;
 };
 
 // incase we want the whole library
