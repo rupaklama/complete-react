@@ -26,12 +26,16 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   if (!userAuth) return;
 
   // query user document inside firestore to see if its already exists
+  // now userRef is documentRef Object on which can perform CRUD methods
   const userRef = firestore.doc(`users/${userAuth.uid}`);
 
-  // snapshot
+  // snapshot is data after calling get/retrieve method of documentRef Object
   const snapshot = await userRef.get();
 
-  // if auth user exists, create user data inside firestore
+  // NOTE- documentSnapshot object allows us to check if a document exists
+  // at this query using the .exists property which returns a boolean
+
+  // if user data does not exists, create user data inside firestore
   if (!snapshot.exists) {
     // destructuring props that we want to store
     const { displayName, email } = userAuth;
@@ -41,6 +45,7 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 
     // async request to store auth user data
     try {
+      // set method of documentRef to create object/data
       await userRef.set({
         displayName,
         email,
@@ -52,7 +57,9 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
     }
   }
 
-  // we can use it to do other things
+  // NOTE - above code will store User in firestore
+  // Now, we want to return that documentRef object - userRef so that
+  // we can use it to do other things in App.js for example
   return userRef;
 };
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-
+import { connect } from 'react-redux';
+import { setCurrentUserAction } from './actions/userAction';
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 
 import './App.css';
@@ -11,48 +12,44 @@ import Homepage from './pages/homepage/Homepage';
 import ShopPage from './pages/shop/ShopPage';
 
 class App extends React.Component {
-  state = {
-    currentUser: null,
-  };
-
   unsubscribeFromAuth = null;
 
   componentDidMount() {
+    // action creator
+    const { setCurrentUserAction } = this.props;
+
     // accessing firebase auth's method for current user state
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+      console.log(userAuth);
       // this.setState({ currentUser: user });
 
       // to store auth user data in firestore
       if (userAuth) {
+        // createUserProfileDocument func returns userRef - documentRef
         const userRef = await createUserProfileDocument(userAuth);
 
         // using userRef to check if our database is updated with any new data
-        // onSnapShot() returns a snapshot data object
+        // onSnapShot() returns a snapshot object representing data store in our firestore
         userRef.onSnapshot(snapShot => {
           // snapShot is a auth user data stored in firestore
           // NOTE - Need to call with .data() to get the actual properties of the snapShot object
           // but not with 'id'. User 'id' is available in snapShot object
-          this.setState(
-            {
-              currentUser: {
-                // Putting User data together with user id & other props that we want
-                id: snapShot.id,
-                ...snapShot.data(),
-              },
-            },
-            () => {
-              // since setState is async
-              console.log(this.state);
-            }
-          );
+
+          setCurrentUserAction({
+            // Putting User data together with user id & other props that we want
+            id: snapShot.id,
+            // .data() to get the actual properties of the snapShot object like displayName, email etc
+            ...snapShot.data(),
+          });
         });
-      } else {
-        // if User signs out, set to null
-        this.setState({ currentUser: userAuth });
       }
+
+      // if User signs out, set to null
+      setCurrentUserAction(userAuth);
     });
   }
 
+  // Calling the unsubscribe function when the component is about to unmount is the best way to make sure we don't get any memory leaks in our application related to listeners still being open even if the component that cares about the listener is no longer on the page
   componentWillUnmount() {
     this.unsubscribeFromAuth();
   }
@@ -61,8 +58,8 @@ class App extends React.Component {
     return (
       // passing in auth user state in Header component
       // so that it has access to to Auth User state
-      <div className='App'>
-        <Header currentUser={this.state.currentUser} />
+      <div>
+        <Header />
         <Switch>
           <Route exact path='/' component={Homepage} />
           <Route exact path='/shop' component={ShopPage} />
@@ -73,4 +70,9 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const mapDispatchToProps = dispatch => ({
+  // setting 'user' param for the action creator
+  setCurrentUserAction: user => dispatch(setCurrentUserAction(user)),
+});
+
+export default connect(null, mapDispatchToProps)(App);

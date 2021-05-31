@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { signInWithGoogle } from '../../firebase/firebase.utils';
+import { auth, signInWithGoogle } from '../../firebase/firebase.utils';
 import './signIn.style.scss';
 
 import FormInput from '../form-input/FormInput';
@@ -17,10 +17,14 @@ const SignIn = () => {
   // name attrib is to refer to the Input element
   const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const onSubmit = e => {
+  const onSubmit = async e => {
     e.preventDefault();
 
-    console.log(email, password);
+    try {
+      await auth.signInWithEmailAndPassword(email, password);
+    } catch (err) {
+      console.error(err);
+    }
 
     setFormData({ email: '', password: '' });
   };
@@ -45,7 +49,7 @@ const SignIn = () => {
 
         <div className='buttons'>
           <Button type='submit'>sign in</Button>
-          <Button onClick={signInWithGoogle} isGoogleSignIn>
+          <Button type='button' onClick={signInWithGoogle} isGoogleSignIn>
             sign in with Google
           </Button>
         </div>
@@ -55,3 +59,5 @@ const SignIn = () => {
 };
 
 export default SignIn;
+
+// If you see that your sign in with google button causes the email and password fields to trigger asking the user to fill these in, simply add the property type="button" to our google sign in button! The reason this happens is because any buttons inside of a form element will cause the form to treat the button as type="submit" by default. We don't want that for our google sign in button though, so just make sure to add type="button" to our google sign in CustomButton.
