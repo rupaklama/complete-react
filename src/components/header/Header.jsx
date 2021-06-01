@@ -8,6 +8,8 @@ import { auth } from '../../firebase/firebase.utils';
 // tells Create React App that you want a React component that renders an SVG, rather than its filename
 import { ReactComponent as Logo } from '../../assets/crown.svg';
 import { useSelector } from 'react-redux';
+import CartIcon from '../cart-icon/CartIcon';
+import CartDropdown from '../cart-dropdown/CartDropdown';
 
 const Header = () => {
   const { currentUser } = useSelector(state => state.user);
@@ -35,7 +37,11 @@ const Header = () => {
             SIGN IN
           </Link>
         )}
+
+        <CartIcon />
       </div>
+
+      <CartDropdown />
     </div>
   );
 };
