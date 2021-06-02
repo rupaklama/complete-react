@@ -13,6 +13,7 @@ import CartDropdown from '../cart-dropdown/CartDropdown';
 
 const Header = () => {
   const { currentUser } = useSelector(state => state.user);
+  const { hidden } = useSelector(state => state.cart);
 
   return (
     <div className='header'>
@@ -41,7 +42,8 @@ const Header = () => {
         <CartIcon />
       </div>
 
-      <CartDropdown />
+      {/* if hidden is true render nothing else <CartDropdown /> */}
+      {hidden ? null : <CartDropdown />}
     </div>
   );
 };
