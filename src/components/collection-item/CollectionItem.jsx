@@ -1,8 +1,18 @@
 import React from 'react';
 import './collection-item.styles.scss';
 import Button from '../button/Button';
+import { useDispatch } from 'react-redux';
+import { addItemAction } from '../../redux/cart/cartAction';
 
-const CollectionItem = ({ name, price, imageUrl }) => {
+const CollectionItem = ({ item }) => {
+  const { name, price, imageUrl } = item;
+
+  const dispatch = useDispatch();
+
+  const handleClick = () => {
+    dispatch(addItemAction(item));
+  };
+
   return (
     <div className='collection-item'>
       <div className='image' style={{ backgroundImage: `url(${imageUrl})` }} />
@@ -12,7 +22,9 @@ const CollectionItem = ({ name, price, imageUrl }) => {
         <span className='price'>{price}</span>
       </div>
 
-      <Button inverted>Add to cart</Button>
+      <Button inverted onClick={handleClick}>
+        Add to cart
+      </Button>
     </div>
   );
 };
