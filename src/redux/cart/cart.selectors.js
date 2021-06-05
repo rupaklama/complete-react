@@ -8,13 +8,18 @@ import { createSelector } from 'reselect';
 // input selector (simple selector) - a function that gets a whole state & returns slice of state
 const selectCart = state => state.cart;
 
-// Reselect is to memoize Selectors value - state
+// Reselect is to Memoize all our Selectors
 // Reselect allow us to memoize and not re-render a component if the state value does not change
 // Since we use createSelector, now its a memoize selector
 
+// cart's hidden memoized state
+export const selectCardHidden = createSelector([selectCart], cart => cart.hidden);
+
+// cart items memoized state
 export const selectCartItems = createSelector(
   // first arg is a collection/array of 'input' selectors
   // we are going to have more input selectors
+  // note - 'input' selectors args can be in an array or separated with commas
   [selectCart],
 
   // output(...) - new derived / calculated piece of state
