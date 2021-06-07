@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { selectCartItems } from '../../redux/cart/cart.selectors';
 import { useHistory } from 'react-router-dom';
 
@@ -7,6 +7,7 @@ import './cart-dropdown.styles.scss';
 
 import Button from '../button/Button';
 import CartItem from '../cart-item/CartItem';
+import { toggleCartHiddenAction } from '../../redux/cart/cartAction';
 
 const CartDropdown = () => {
   // console.count('CartDropdown');
@@ -14,10 +15,13 @@ const CartDropdown = () => {
   // using reselect selector to access cart items
   const cartItems = useSelector(selectCartItems);
 
+  const dispatch = useDispatch();
+
   const history = useHistory();
 
   const handleClick = () => {
     history.push('/checkout');
+    dispatch(toggleCartHiddenAction());
   };
 
   return (
