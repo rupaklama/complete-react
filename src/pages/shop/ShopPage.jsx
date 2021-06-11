@@ -1,6 +1,6 @@
 import CollectionsOverview from '../../components/collections-overview/CollectionsOverview';
 
-const ShopPage = () => {
+const ShopPage = ({ match }) => {
   return (
     <div className='shop-page'>
       <CollectionsOverview />

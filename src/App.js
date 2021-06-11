@@ -1,19 +1,28 @@
-import React from 'react';
+import { Component, lazy, Suspense } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 import { setCurrentUserAction } from './redux/user/userAction';
 
-import './App.css';
+import ErrorBoundary from './components/error-boundary/ErrorBoundary';
+
+// styled component global styles
+import { GlobalStyle } from './global.styles';
 
 import Header from './components/header/Header';
-import SignInSignUp from './pages/ auth/SignInSignUp';
-import Homepage from './pages/homepage/Homepage';
-import ShopPage from './pages/shop/ShopPage';
-import Checkout from './pages/checkout/Checkout';
 
-class App extends React.Component {
+// import Homepage from './pages/homepage/Homepage';
+// import ShopPage from './pages/shop/ShopPage';
+// import Checkout from './pages/checkout/Checkout';
+// import moduleName from './pages/ auth/SignInSignUp'
+
+const HomePage = lazy(() => import('./pages/homepage/Homepage'));
+const ShopPage = lazy(() => import('./pages/shop/ShopPage'));
+const Checkout = lazy(() => import('./pages/checkout/Checkout'));
+const SignInSignUp = lazy(() => import('./pages/ auth/SignInSignUp'));
+
+class App extends Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
@@ -61,16 +70,22 @@ class App extends React.Component {
       // passing in auth user state in Header component
       // so that it has access to to Auth User state
       <div>
+        <GlobalStyle />
         <Header />
         <Switch>
-          <Route exact path='/' component={Homepage} />
-          <Route exact path='/shop' component={ShopPage} />
-          <Route exact path='/checkout' component={Checkout} />
-          <Route
-            exact
-            path='/signin'
-            render={() => (this.props.currentUser ? <Redirect to='/' /> : <SignInSignUp />)}
-          />
+          <ErrorBoundary>
+            <Suspense fallback={<div>...Loading</div>}>
+              <Route exact path='/' component={HomePage} />
+              <Route exact path='/shop' component={ShopPage} />
+
+              <Route exact path='/checkout' component={Checkout} />
+              <Route
+                exact
+                path='/signin'
+                render={() => (this.props.currentUser ? <Redirect to='/' /> : <SignInSignUp />)}
+              />
+            </Suspense>
+          </ErrorBoundary>
         </Switch>
       </div>
     );
