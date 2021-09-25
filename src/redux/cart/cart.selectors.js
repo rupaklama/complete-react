@@ -20,23 +20,25 @@ const selectCart = state => state.cart;
 export const selectCardHidden = createSelector([selectCart], cart => cart.hidden);
 
 // cart items memoized state
+// Note - Because we use 'createSelector', now it is a Memoized Selector
 export const selectCartItems = createSelector(
   // first arg is a collection/array of 'input' selectors
   // we are going to have more input selectors
   // note - 'input' selectors args can be in an array or separated with commas
   [selectCart],
 
-  // output(...) - new derived / calculated piece of state
-  // This is an Output function which will return the value we want out of the selectors above
-  // arguments order does matter according to the input selectors
+  // output(...) - new derived / calculated piece of state out of Input Selectors in array - [selectCart]
+  // This is an Output function which will return the value we want out of Input Selectors in array - [selectCart]
+  // in the order of the selectors in an array - [selector1, selector2, selector3]  eg. (cart, user) => {}
+  // NOTE - arguments order does matter according to the input selectors
   // note - this is the value whatever the input selector returns
   // cart - {hidden: true, cartItems: [...]}
   cart => cart.cartItems
 );
 
-// Composable means we can also add other Reselect Selectors as inputs
+// Composable means we can also add other Memoized Reselect Selectors as inputs
 // to build a new selector for complex transformation.
-// note - adding above Reselect Selector to use its value here
+// note - adding above Memoized Reselect Selector to use its value here
 // Reselect selector which returns cart items - Quantity
 export const selectCartItemsCount = createSelector([selectCartItems], cartItems =>
   cartItems.reduce((total, item) => total + item.quantity, 0)
