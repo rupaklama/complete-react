@@ -15,7 +15,7 @@ const selectCart = state => state.cart;
 // Reselect allow us to memoize and not re-render a component if the state value does not change
 // Since we use createSelector, now its a memoize selector
 
-// This is 'output' Function/Selector that does use 'input' selectors & 'createSelector'
+// This is 'output' Function/Selector that does use 'input' selector from above & 'createSelector'
 // cart's hidden memoized state
 export const selectCardHidden = createSelector([selectCart], cart => cart.hidden);
 
