@@ -1,3 +1,5 @@
+// reselect - Redux middleware library for creating memoized selectors
+//  will allow us to memoize and not re-render a component if the state value does not change
 import { createSelector } from 'reselect';
 
 // there are two types of selectors we can write
@@ -6,6 +8,7 @@ import { createSelector } from 'reselect';
 
 // naming structure - begins with 'select'
 // input selector (simple selector) - a function that gets a whole state & returns slice of state
+// note - 'useSelector' is an Input Selector
 const selectCart = state => state.cart;
 
 // Reselect is to Memoize all our Selectors
