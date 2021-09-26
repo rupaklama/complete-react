@@ -27,6 +27,7 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
+// All Initial Redux Actions get fired to persist data - check redux dev tools
 // NOTE - type(pin):"persist/PERSIST" is from persist library
 // Initially it checks if anything exists or not in our redux store
 
